@@ -2,6 +2,7 @@ import { apiResponse, getModerator } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { broadcastToGame } from "@/lib/supabase/admin";
 import { calculateGameStats } from "@/lib/game/stats";
+import { getShuffledOptions } from "@/lib/game/shuffle";
 
 export async function POST(
   _request: Request,
@@ -143,6 +144,8 @@ export async function POST(
     data: { currentRound: nextRoundNumber },
   });
 
+  const shuffled = getShuffledOptions(nextQuestion.question, nextRound.id);
+
   await broadcastToGame(session.roomCode, "question:show", {
     type: "question:show",
     roundId: nextRound.id,
@@ -151,10 +154,10 @@ export async function POST(
     question: {
       id: nextQuestion.question.id,
       text: nextQuestion.question.text,
-      optionA: nextQuestion.question.optionA,
-      optionB: nextQuestion.question.optionB,
-      optionC: nextQuestion.question.optionC,
-      optionD: nextQuestion.question.optionD,
+      optionA: shuffled.optionA,
+      optionB: shuffled.optionB,
+      optionC: shuffled.optionC,
+      optionD: shuffled.optionD,
     },
     timePerQuestion: session.timePerQuestion,
   });

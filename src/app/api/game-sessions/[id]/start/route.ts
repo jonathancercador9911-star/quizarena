@@ -1,6 +1,7 @@
 import { apiResponse, getModerator } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { broadcastToGame } from "@/lib/supabase/admin";
+import { getShuffledOptions } from "@/lib/game/shuffle";
 import type { PlayerTeamMap } from "@/lib/game/realtime";
 
 export async function POST(
@@ -72,6 +73,8 @@ export async function POST(
     }),
   ]);
 
+  const shuffled = getShuffledOptions(question, gameRound.id);
+
   await broadcastToGame(session.roomCode, "game:started", {
     type: "game:started",
     roundId: gameRound.id,
@@ -80,10 +83,10 @@ export async function POST(
     question: {
       id: question.id,
       text: question.text,
-      optionA: question.optionA,
-      optionB: question.optionB,
-      optionC: question.optionC,
-      optionD: question.optionD,
+      optionA: shuffled.optionA,
+      optionB: shuffled.optionB,
+      optionC: shuffled.optionC,
+      optionD: shuffled.optionD,
     },
     timePerQuestion: session.timePerQuestion,
     ...(playerTeams && { playerTeams }),

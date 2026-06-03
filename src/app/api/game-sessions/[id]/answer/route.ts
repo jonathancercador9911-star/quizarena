@@ -2,6 +2,7 @@ import { apiResponse } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { broadcastToGame } from "@/lib/supabase/admin";
 import { calculateScore } from "@/lib/game/scoring";
+import { getShuffledOptions } from "@/lib/game/shuffle";
 
 const VALID_OPTIONS = ["A", "B", "C", "D"] as const;
 
@@ -47,7 +48,9 @@ export async function POST(
   if (alreadyAnswered) return apiResponse(null, "Ya respondiste esta ronda", 400);
 
   const selectedOption = body.selectedOption as string;
-  const isCorrect = selectedOption === round.question.correctOption;
+  // Aplicar el mismo shuffle determinista que se usó al transmitir la pregunta
+  const shuffled = getShuffledOptions(round.question, round.id);
+  const isCorrect = selectedOption === shuffled.shuffledCorrectOption;
   const responseMs = Date.now() - round.startedAt.getTime();
   const score = calculateScore(isCorrect, responseMs, session.timePerQuestion * 1000);
 
