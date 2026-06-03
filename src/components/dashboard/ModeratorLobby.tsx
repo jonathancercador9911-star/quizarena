@@ -159,7 +159,7 @@ export function ModeratorLobby({
 
       {players.length === 0 && (
         <p className="text-center text-xs text-[#9CA3AF]">
-          Necesitás al menos 1 jugador para iniciar.
+          Necesitas al menos 1 jugador para iniciar.
         </p>
       )}
     </div>

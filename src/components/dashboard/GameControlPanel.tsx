@@ -54,6 +54,11 @@ export function GameControlPanel({
     } else if (event.type === "timer:start") {
       setPhase("active");
       setStartingTimer(false);
+    } else if (event.type === "game:started") {
+      setRoundNumber(event.roundNumber);
+      setQuestionText(event.question.text);
+      setAnswered(0);
+      setPhase("preview");
     } else if (event.type === "question:show") {
       setRoundNumber(event.roundNumber);
       setQuestionText(event.question.text);
@@ -75,6 +80,7 @@ export function GameControlPanel({
     let channel: RealtimeChannel;
     channel = supabase.channel(getChannelName(roomCode));
     channel
+      .on<GameEvent>("broadcast", { event: "game:started" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "answer:count" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "timer:start" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "question:show" }, ({ payload }) => handleEvent(payload))
