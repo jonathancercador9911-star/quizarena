@@ -98,6 +98,18 @@ export function CreateGameWizard({ banks }: Props) {
   const isLastStep = mode === "individual" ? step === 2 : step === 3;
   const currentSteps = mode === "individual" ? ["Banco", "Modo", "Tiempo"] : STEPS;
 
+  // Agrupar bancos por categoría (calculado fuera del JSX para evitar IIFE)
+  const bankGroups: Record<string, Bank[]> = {};
+  for (const b of banks) {
+    if (!bankGroups[b.category]) bankGroups[b.category] = [];
+    bankGroups[b.category].push(b);
+  }
+  const groupOrder = [
+    "Mis bancos",
+    ...Object.keys(bankGroups).filter(k => k !== "Mis bancos" && k !== "Sistema"),
+    "Sistema",
+  ].filter(k => bankGroups[k]);
+
   return (
     <div className="space-y-6">
       {/* Progress */}
@@ -122,56 +134,45 @@ export function CreateGameWizard({ banks }: Props) {
         {error && <div className="mb-4 rounded-md bg-[#EF4444]/10 border border-[#EF4444]/20 p-3 text-sm text-[#EF4444]">{error}</div>}
 
         {/* Step 0: Banks (multi-select, agrupados por categoría) */}
-        {step === 0 && (() => {
-          const grouped = banks.reduce<Record<string, Bank[]>>((acc, b) => {
-            const key = b.category;
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(b);
-            return acc;
-          }, {});
-          const groupOrder = ["Mis bancos", ...Object.keys(grouped).filter(k => k !== "Mis bancos" && k !== "Sistema"), "Sistema"];
-          const sortedGroups = groupOrder.filter(k => grouped[k]);
-
-          return (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-[#9CA3AF]">Selecciona uno o varios bancos — sin límite.</p>
-                {bankIds.length > 0 && (
-                  <span className="text-xs text-[#7C3AED] font-medium">
-                    {bankIds.length} banco{bankIds.length > 1 ? "s" : ""} · {totalQuestions} preguntas
-                  </span>
-                )}
-              </div>
-              {banks.length === 0 && <p className="text-[#9CA3AF] text-sm">No hay bancos disponibles.</p>}
-              {sortedGroups.map((groupName) => (
-                <div key={groupName} className="space-y-2">
-                  <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">{groupName}</p>
-                  {grouped[groupName].map((b) => {
-                    const selected = bankIds.includes(b.id);
-                    return (
-                      <button key={b.id} onClick={() => toggleBank(b.id)}
-                        className={cn("w-full text-left rounded-lg border p-3 transition-colors",
-                          selected ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50 hover:bg-[#2D2A3E]/50"
-                        )}>
-                        <div className="flex items-center gap-3">
-                          <div className={cn("h-5 w-5 rounded flex items-center justify-center border-2 shrink-0 transition-colors",
-                            selected ? "bg-[#7C3AED] border-[#7C3AED]" : "border-[#4B5563]"
-                          )}>
-                            {selected && <Check className="h-3 w-3 text-white" />}
-                          </div>
-                          <div className="flex-1 flex items-center justify-between">
-                            <span className="font-medium text-[#F8FAFC] text-sm">{b.name.replace(" — Sistema", "")}</span>
-                            <span className="text-xs text-[#9CA3AF]">{b.questionCount} preg.</span>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
+        {step === 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-[#9CA3AF]">Selecciona uno o varios bancos — sin límite.</p>
+              {bankIds.length > 0 && (
+                <span className="text-xs text-[#7C3AED] font-medium">
+                  {bankIds.length} banco{bankIds.length > 1 ? "s" : ""} · {totalQuestions} preguntas
+                </span>
+              )}
             </div>
-          );
-        })()}
+            {banks.length === 0 && <p className="text-[#9CA3AF] text-sm">No hay bancos disponibles.</p>}
+            {groupOrder.map((groupName) => (
+              <div key={groupName} className="space-y-2">
+                <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">{groupName}</p>
+                {bankGroups[groupName].map((b) => {
+                  const selected = bankIds.includes(b.id);
+                  return (
+                    <button key={b.id} onClick={() => toggleBank(b.id)}
+                      className={cn("w-full text-left rounded-lg border p-3 transition-colors",
+                        selected ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50 hover:bg-[#2D2A3E]/50"
+                      )}>
+                      <div className="flex items-center gap-3">
+                        <div className={cn("h-5 w-5 rounded flex items-center justify-center border-2 shrink-0 transition-colors",
+                          selected ? "bg-[#7C3AED] border-[#7C3AED]" : "border-[#4B5563]"
+                        )}>
+                          {selected && <Check className="h-3 w-3 text-white" />}
+                        </div>
+                        <div className="flex-1 flex items-center justify-between">
+                          <span className="font-medium text-[#F8FAFC] text-sm">{b.name.replace(" — Sistema", "")}</span>
+                          <span className="text-xs text-[#9CA3AF]">{b.questionCount} preg.</span>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Step 1: Mode */}
         {step === 1 && (
