@@ -22,8 +22,16 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const moderator = await prisma.moderator.findUnique({ where: { authId: user.id } });
-  if (!moderator) redirect("/login");
+  let moderator = await prisma.moderator.findUnique({ where: { authId: user.id } });
+  if (!moderator) {
+    moderator = await prisma.moderator.create({
+      data: {
+        authId: user.id,
+        email: user.email!,
+        name: (user.user_metadata?.full_name as string | undefined) ?? null,
+      },
+    });
+  }
 
   const [bankCount, gameCount, recentGames] = await Promise.all([
     prisma.questionBank.count({ where: { OR: [{ moderatorId: moderator.id }, { isSystem: true }] } }),
