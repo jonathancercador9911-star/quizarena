@@ -54,14 +54,14 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#F8FAFC]">
-            Hola, {moderator.name ?? user.email?.split("@")[0]} 👋
+            Bienvenido, Maestro de Arena {moderator.name ?? user.email?.split("@")[0]} ⚔️
           </h1>
-          <p className="text-[#9CA3AF] mt-1">Aquí está el resumen de tu actividad.</p>
+          <p className="text-[#9CA3AF] mt-1">Aquí está el resumen de tu arena.</p>
         </div>
         <Link href="/games/new">
           <Button className="bg-[#7C3AED] hover:bg-[#5B21B6] text-white">
             <Plus className="h-4 w-4 mr-1.5" />
-            Nueva partida
+            Nuevo combate
           </Button>
         </Link>
       </div>
@@ -69,9 +69,9 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { icon: BookOpen, label: "Bancos disponibles", value: bankCount, href: "/banks" },
-          { icon: Trophy, label: "Partidas jugadas", value: gameCount, href: "/games" },
-          { icon: Users, label: "Partidas activas", value: activeGames.length, href: "/games" },
+          { icon: BookOpen, label: "Dominios disponibles", value: bankCount, href: "/banks" },
+          { icon: Trophy, label: "Combates realizados", value: gameCount, href: "/games" },
+          { icon: Users, label: "Combates activos", value: activeGames.length, href: "/games" },
         ].map((stat) => (
           <Link key={stat.label} href={stat.href}>
             <div className="rounded-xl border border-[#2D2A3E] bg-[#1E1B2E] p-5 flex items-center gap-4 hover:border-[#7C3AED]/50 transition-colors">
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-[#9CA3AF] uppercase tracking-wider">
-            Partidas recientes
+            Combates recientes
           </h2>
           <Link href="/games" className="text-xs text-[#7C3AED] hover:underline">
             Ver todas

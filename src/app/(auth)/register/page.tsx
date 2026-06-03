@@ -81,7 +81,7 @@ export default function RegisterPage() {
           Crear cuenta
         </CardTitle>
         <CardDescription className="text-[#9CA3AF]">
-          Regístrate como moderador para crear partidas
+          Regístrate como Maestro de Arena para abrir combates
         </CardDescription>
       </CardHeader>
 

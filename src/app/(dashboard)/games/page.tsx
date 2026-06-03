@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, Trophy } from "lucide-react";
+import { Plus, Swords } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CancelGameButton } from "@/components/dashboard/CancelGameButton";
 
 const STATUS_LABEL: Record<string, string> = {
-  lobby: "Sala de espera",
-  active: "En curso",
-  finished: "Finalizada",
+  lobby: "Antesala",
+  active: "En combate",
+  finished: "Finalizado",
 };
 const STATUS_COLOR: Record<string, string> = {
   lobby: "bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30",
@@ -39,24 +40,24 @@ export default async function GamesPage() {
     <div className="p-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#F8FAFC]">Partidas</h1>
-          <p className="text-[#9CA3AF] mt-1">Historial de tus sesiones de juego.</p>
+          <h1 className="text-2xl font-bold text-[#F8FAFC]">Combates</h1>
+          <p className="text-[#9CA3AF] mt-1">Historial de tus arenas de batalla.</p>
         </div>
         <Link href="/games/new">
           <Button className="bg-[#7C3AED] hover:bg-[#5B21B6] text-white">
             <Plus className="h-4 w-4 mr-1.5" />
-            Nueva partida
+            Nuevo combate
           </Button>
         </Link>
       </div>
 
       {sessions.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[#2D2A3E] p-16 text-center">
-          <Trophy className="h-10 w-10 text-[#2D2A3E] mx-auto mb-4" />
+          <Swords className="h-10 w-10 text-[#2D2A3E] mx-auto mb-4" />
           <p className="text-[#9CA3AF] text-sm">
-            Todavía no has jugado ninguna partida.{" "}
+            Todavía no has abierto ningún combate.{" "}
             <Link href="/games/new" className="text-[#7C3AED] hover:underline">
-              Crea una ahora
+              Inicia uno ahora
             </Link>
             .
           </p>
@@ -67,9 +68,9 @@ export default async function GamesPage() {
             <thead>
               <tr className="border-b border-[#2D2A3E] bg-[#1E1B2E]">
                 <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Código</th>
-                <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Banco</th>
+                <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Arena</th>
                 <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Estado</th>
-                <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Jugadores</th>
+                <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Retadores</th>
                 <th className="text-left px-4 py-3 text-[#9CA3AF] font-medium">Fecha</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -80,7 +81,9 @@ export default async function GamesPage() {
                   <td className="px-4 py-3 font-mono font-bold text-[#F8FAFC] tracking-widest">
                     {s.roomCode}
                   </td>
-                  <td className="px-4 py-3 text-[#9CA3AF]">{s.questionBank.name}</td>
+                  <td className="px-4 py-3 text-[#9CA3AF] max-w-[180px] truncate">
+                    {s.questionBank.name.replace(" — Sistema", "")}
+                  </td>
                   <td className="px-4 py-3">
                     <Badge className={STATUS_COLOR[s.status] ?? ""}>
                       {STATUS_LABEL[s.status] ?? s.status}
@@ -88,16 +91,21 @@ export default async function GamesPage() {
                   </td>
                   <td className="px-4 py-3 text-[#9CA3AF]">{s._count.players}</td>
                   <td className="px-4 py-3 text-[#9CA3AF]">
-                    {s.createdAt.toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" })}
+                    {s.createdAt.toLocaleDateString("es-EC", { day: "2-digit", month: "short", year: "numeric" })}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {s.status !== "finished" && (
-                      <Link href={`/games/${s.id}/${s.status === "lobby" ? "lobby" : "control"}`}>
-                        <Button size="sm" variant="outline" className="border-[#2D2A3E] text-[#F8FAFC] hover:bg-[#2D2A3E]">
-                          {s.status === "lobby" ? "Sala" : "Control"}
-                        </Button>
-                      </Link>
-                    )}
+                    <div className="flex items-center justify-end gap-2">
+                      {s.status !== "finished" && (
+                        <Link href={`/games/${s.id}/${s.status === "lobby" ? "lobby" : "control"}`}>
+                          <Button size="sm" variant="outline" className="border-[#2D2A3E] text-[#F8FAFC] hover:bg-[#2D2A3E]">
+                            {s.status === "lobby" ? "Antesala" : "Controlar"}
+                          </Button>
+                        </Link>
+                      )}
+                      {s.status !== "finished" && (
+                        <CancelGameButton sessionId={s.id} roomCode={s.roomCode} />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

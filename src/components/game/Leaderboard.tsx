@@ -46,7 +46,7 @@ export function Leaderboard({ entries, myPlayerId, compact = false }: Leaderboar
             </span>
             <div className="text-right shrink-0 space-y-0.5">
               <p className="text-sm font-bold text-[#F8FAFC]">
-                {entry.totalScore.toLocaleString()} pts
+                {entry.totalScore.toLocaleString()} Gloria
               </p>
               {entry.correctCount !== undefined && (
                 <p className="text-xs text-[#9CA3AF]">

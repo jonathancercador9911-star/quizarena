@@ -103,7 +103,7 @@ export default function PlayerGamePage({
               style={{ animationDelay: `${i * 0.15}s` }} />
           ))}
         </div>
-        <p className="text-[#9CA3AF]">Esperando la primera pregunta...</p>
+        <p className="text-[#9CA3AF]">El Maestro de Arena está preparando el primer desafío...</p>
       </div>
     );
   }
@@ -115,7 +115,7 @@ export default function PlayerGamePage({
       <div className="flex-1 flex flex-col items-center px-4 py-8 space-y-6 max-w-md mx-auto w-full">
         <div className="text-center">
           <h1 className="font-heading text-3xl font-extrabold text-[#F8FAFC]">
-            ¡Juego terminado!
+            ¡El combate ha terminado!
           </h1>
           {myEntry && (
             <p className="text-[#9CA3AF] mt-1">
@@ -123,7 +123,7 @@ export default function PlayerGamePage({
               <span className="text-[#7C3AED] font-bold">#{myEntry.rank}</span>
               {" con "}
               <span className="text-[#F8FAFC] font-bold">
-                {myEntry.totalScore.toLocaleString()} pts
+                {myEntry.totalScore.toLocaleString()} de Gloria
               </span>
             </p>
           )}
@@ -161,7 +161,7 @@ export default function PlayerGamePage({
         ) : (
           <Leaderboard entries={store.leaderboard} myPlayerId={playerId} compact />
         )}
-        <p className="text-xs text-[#9CA3AF] animate-pulse">Siguiente pregunta en breve...</p>
+        <p className="text-xs text-[#9CA3AF] animate-pulse">El siguiente desafío se aproxima...</p>
       </div>
     );
   }
@@ -173,13 +173,13 @@ export default function PlayerGamePage({
         {store.isCorrect ? (
           <>
             <div className="text-5xl">✅</div>
-            <p className="text-2xl font-bold text-[#10B981]">¡Correcto!</p>
-            <p className="text-[#9CA3AF]">+{store.roundScore} puntos</p>
+            <p className="text-2xl font-bold text-[#10B981]">¡Golpe Maestro!</p>
+            <p className="text-[#9CA3AF]">+{store.roundScore} Gloria</p>
           </>
         ) : store.myAnswer ? (
           <>
             <div className="text-5xl">❌</div>
-            <p className="text-2xl font-bold text-[#EF4444]">Incorrecto</p>
+            <p className="text-2xl font-bold text-[#EF4444]">Tropiezo</p>
           </>
         ) : (
           <>
@@ -187,7 +187,7 @@ export default function PlayerGamePage({
             <p className="text-2xl font-bold text-[#9CA3AF]">Se acabó el tiempo</p>
           </>
         )}
-        <p className="text-sm text-[#9CA3AF] animate-pulse mt-4">Esperando al resto...</p>
+        <p className="text-sm text-[#9CA3AF] animate-pulse mt-4">El Maestro de Arena contabiliza los resultados...</p>
       </div>
     );
   }
@@ -208,7 +208,7 @@ export default function PlayerGamePage({
                 style={{ animationDelay: `${i * 0.15}s` }} />
             ))}
           </div>
-          <p className="text-sm text-[#9CA3AF]">Lee la pregunta... el moderador iniciará el tiempo</p>
+          <p className="text-sm text-[#9CA3AF]">Lee el desafío... el Maestro de Arena iniciará el tiempo</p>
         </div>
       </div>
     );

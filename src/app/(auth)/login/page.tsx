@@ -65,7 +65,7 @@ function LoginForm({
           Iniciar sesión
         </CardTitle>
         <CardDescription className="text-[#9CA3AF]">
-          Accede a tu panel de moderador
+          Accede a tu arena como Maestro
         </CardDescription>
       </CardHeader>
 

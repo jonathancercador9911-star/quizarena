@@ -6,9 +6,9 @@ import { LayoutDashboard, BookOpen, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", Icon: LayoutDashboard, exact: true },
-  { href: "/banks", label: "Mis Bancos", Icon: BookOpen, exact: false },
-  { href: "/games", label: "Partidas", Icon: Gamepad2, exact: false },
+  { href: "/dashboard", label: "Mi Arena", Icon: LayoutDashboard, exact: true },
+  { href: "/banks", label: "Mis Dominios", Icon: BookOpen, exact: false },
+  { href: "/games", label: "Combates", Icon: Gamepad2, exact: false },
 ];
 
 export function SidebarNav() {
