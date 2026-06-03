@@ -28,12 +28,23 @@ const STEPS = ["Banco", "Modo", "Equipos", "Tiempo"];
 export function CreateGameWizard({ banks }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [bankId, setBankId] = useState("");
+  const [bankIds, setBankIds] = useState<string[]>([]);
   const [mode, setMode] = useState<"individual" | "teams">("individual");
   const [teams, setTeams] = useState<Team[]>(DEFAULT_TEAMS);
   const [time, setTime] = useState<10 | 20 | 30>(20);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  function toggleBank(id: string) {
+    setBankIds((prev) =>
+      prev.includes(id) ? prev.filter((b) => b !== id) : [...prev, id]
+    );
+    setError(null);
+  }
+
+  const totalQuestions = banks
+    .filter((b) => bankIds.includes(b.id))
+    .reduce((sum, b) => sum + b.questionCount, 0);
 
   const maxStep = mode === "individual" ? 3 : 3;
   const steps = mode === "individual"
@@ -57,7 +68,7 @@ export function CreateGameWizard({ banks }: Props) {
   }
 
   function next() {
-    if (step === 0 && !bankId) { setError("Selecciona un banco"); return; }
+    if (step === 0 && bankIds.length === 0) { setError("Selecciona al menos un banco"); return; }
     if (step === 1 && mode === "teams" && step + 1 === 2) { setError(null); setStep(step + 1); return; }
     setError(null);
     const actualSteps = mode === "individual" ? ["banco", "modo", "tiempo"] : ["banco", "modo", "equipos", "tiempo"];
@@ -73,7 +84,7 @@ export function CreateGameWizard({ banks }: Props) {
     const res = await fetch("/api/game-sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionBankId: bankId, mode, teams: mode === "teams" ? teams : undefined, timePerQuestion: time }),
+      body: JSON.stringify({ questionBankIds: bankIds, mode, teams: mode === "teams" ? teams : undefined, timePerQuestion: time }),
     });
 
     const json = (await res.json()) as { data: { id: string } | null; error: string | null };
@@ -109,23 +120,39 @@ export function CreateGameWizard({ banks }: Props) {
       <div className="rounded-xl border border-[#2D2A3E] bg-[#1E1B2E] p-6 min-h-[280px]">
         {error && <div className="mb-4 rounded-md bg-[#EF4444]/10 border border-[#EF4444]/20 p-3 text-sm text-[#EF4444]">{error}</div>}
 
-        {/* Step 0: Bank */}
+        {/* Step 0: Banks (multi-select) */}
         {step === 0 && (
           <div className="space-y-3">
-            <p className="text-sm text-[#9CA3AF] mb-4">Selecciona el banco de preguntas para esta partida.</p>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-[#9CA3AF]">Selecciona uno o varios bancos de preguntas.</p>
+              {bankIds.length > 0 && (
+                <span className="text-xs text-[#7C3AED] font-medium">
+                  {totalQuestions} preguntas en total
+                </span>
+              )}
+            </div>
             {banks.length === 0 && <p className="text-[#9CA3AF] text-sm">No hay bancos disponibles.</p>}
-            {banks.map((b) => (
-              <button key={b.id} onClick={() => { setBankId(b.id); setError(null); }}
-                className={cn("w-full text-left rounded-lg border p-4 transition-colors",
-                  bankId === b.id ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50 hover:bg-[#2D2A3E]/50"
-                )}>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-[#F8FAFC]">{b.name}</span>
-                  <span className="text-sm text-[#9CA3AF]">{b.questionCount} preguntas</span>
-                </div>
-                {bankId === b.id && <div className="mt-1 flex items-center gap-1 text-[#7C3AED] text-xs"><Check className="h-3 w-3" /> Seleccionado</div>}
-              </button>
-            ))}
+            {banks.map((b) => {
+              const selected = bankIds.includes(b.id);
+              return (
+                <button key={b.id} onClick={() => toggleBank(b.id)}
+                  className={cn("w-full text-left rounded-lg border p-4 transition-colors",
+                    selected ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50 hover:bg-[#2D2A3E]/50"
+                  )}>
+                  <div className="flex items-center gap-3">
+                    <div className={cn("h-5 w-5 rounded flex items-center justify-center border-2 shrink-0 transition-colors",
+                      selected ? "bg-[#7C3AED] border-[#7C3AED]" : "border-[#4B5563]"
+                    )}>
+                      {selected && <Check className="h-3 w-3 text-white" />}
+                    </div>
+                    <div className="flex-1 flex items-center justify-between">
+                      <span className="font-medium text-[#F8FAFC]">{b.name}</span>
+                      <span className="text-sm text-[#9CA3AF]">{b.questionCount} preguntas</span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         )}
 

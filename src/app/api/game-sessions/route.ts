@@ -10,10 +10,17 @@ export async function POST(request: Request) {
   if (!moderator) return apiResponse(null, "No autorizado", 401);
 
   const body = (await request.json()) as Record<string, unknown>;
-  const { questionBankId, mode, teams, timePerQuestion } = body;
+  const { questionBankIds, mode, teams, timePerQuestion } = body;
 
-  if (typeof questionBankId !== "string") {
-    return apiResponse(null, "Banco de preguntas requerido", 400);
+  // Acepta array o string único (retrocompatibilidad)
+  const bankIdsRaw = Array.isArray(questionBankIds)
+    ? questionBankIds
+    : typeof questionBankIds === "string"
+    ? [questionBankIds]
+    : [];
+
+  if (bankIdsRaw.length === 0) {
+    return apiResponse(null, "Selecciona al menos un banco de preguntas", 400);
   }
   if (!VALID_MODES.includes(mode as (typeof VALID_MODES)[number])) {
     return apiResponse(null, "Modo inválido", 400);
@@ -22,19 +29,59 @@ export async function POST(request: Request) {
     return apiResponse(null, "Tiempo por pregunta inválido", 400);
   }
 
-  const bank = await prisma.questionBank.findFirst({
+  // Verificar que todos los bancos existen y el moderador tiene acceso
+  const banks = await prisma.questionBank.findMany({
     where: {
-      id: questionBankId,
+      id: { in: bankIdsRaw },
       OR: [{ moderatorId: moderator.id }, { isSystem: true }],
     },
-    include: { _count: { select: { bankQuestions: true } } },
+    include: {
+      bankQuestions: { select: { questionId: true, order: true } },
+    },
   });
 
-  if (!bank) return apiResponse(null, "Banco no encontrado", 404);
+  if (banks.length !== bankIdsRaw.length) {
+    return apiResponse(null, "Uno o más bancos no encontrados", 404);
+  }
 
-  const totalRounds = bank._count.bankQuestions;
+  // Combinar preguntas de todos los bancos (sin duplicados)
+  const seenQuestionIds = new Set<string>();
+  const combinedQuestions: { questionId: string; order: number }[] = [];
+  for (const bank of banks) {
+    for (const bq of bank.bankQuestions) {
+      if (!seenQuestionIds.has(bq.questionId)) {
+        seenQuestionIds.add(bq.questionId);
+        combinedQuestions.push({ questionId: bq.questionId, order: combinedQuestions.length });
+      }
+    }
+  }
+
+  const totalRounds = combinedQuestions.length;
   if (totalRounds === 0) {
-    return apiResponse(null, "El banco no tiene preguntas", 400);
+    return apiResponse(null, "Los bancos seleccionados no tienen preguntas", 400);
+  }
+
+  // Si hay más de un banco, crear banco combinado temporal para la sesión
+  let sessionBankId: string;
+  if (banks.length === 1) {
+    sessionBankId = banks[0].id;
+  } else {
+    const bankNames = banks.map((b) => b.name).join(" + ");
+    const mergedBank = await prisma.questionBank.create({
+      data: {
+        name: `[Combinado] ${bankNames}`.slice(0, 100),
+        description: `Banco combinado para partida`,
+        isSystem: false,
+        moderatorId: moderator.id,
+        bankQuestions: {
+          create: combinedQuestions.map((q) => ({
+            questionId: q.questionId,
+            order: q.order,
+          })),
+        },
+      },
+    });
+    sessionBankId = mergedBank.id;
   }
 
   if (mode === "teams") {
@@ -67,7 +114,7 @@ export async function POST(request: Request) {
     data: {
       roomCode,
       moderatorId: moderator.id,
-      questionBankId,
+      questionBankId: sessionBankId,
       mode: mode as string,
       status: "lobby",
       totalRounds,
