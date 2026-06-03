@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const moderator = await getModerator();
   if (!moderator) return apiResponse(null, "No autorizado", 401);
 
-  const body = (await request.json()) as { name?: unknown; description?: unknown };
+  const body = (await request.json()) as { name?: unknown; description?: unknown; category?: unknown };
 
   if (typeof body.name !== "string" || body.name.trim() === "") {
     return apiResponse(null, "El nombre es requerido", 400);
@@ -29,8 +29,8 @@ export async function POST(request: Request) {
   const bank = await prisma.questionBank.create({
     data: {
       name: body.name.trim(),
-      description:
-        typeof body.description === "string" ? body.description.trim() : null,
+      description: typeof body.description === "string" ? body.description.trim() : null,
+      category: typeof body.category === "string" && body.category.trim() ? body.category.trim() : null,
       moderatorId: moderator.id,
       isSystem: false,
     },

@@ -14,6 +14,7 @@ export default function NewBankPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +26,7 @@ export default function NewBankPage() {
     const res = await fetch("/api/question-banks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, description }),
+      body: JSON.stringify({ name, description, category: category.trim() || null }),
     });
 
     const json = (await res.json()) as { data: { id: string } | null; error: string | null };
@@ -68,6 +69,19 @@ export default function NewBankPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ej: Historia Argentina"
                 required
+                disabled={loading}
+                className="bg-[#13111A] border-[#2D2A3E] text-[#F8FAFC] placeholder:text-[#9CA3AF]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-[#F8FAFC]">
+                Categoría <span className="text-[#9CA3AF] font-normal">(opcional)</span>
+              </Label>
+              <Input
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Ej: Ciencias, Historia, Empresa..."
                 disabled={loading}
                 className="bg-[#13111A] border-[#2D2A3E] text-[#F8FAFC] placeholder:text-[#9CA3AF]"
               />

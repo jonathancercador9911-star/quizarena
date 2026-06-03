@@ -24,8 +24,20 @@ export default async function BanksPage() {
     orderBy: [{ isSystem: "desc" }, { createdAt: "desc" }],
   });
 
-  const ownBanks = banks.filter((b) => !b.isSystem);
+  const ownBanks = banks.filter((b) => !b.isSystem && !b.name.startsWith("[Partida]"));
   const systemBanks = banks.filter((b) => b.isSystem);
+
+  // Agrupar bancos propios por categoría
+  const ownByCategory = ownBanks.reduce<Record<string, typeof ownBanks>>((acc, b) => {
+    const key = b.category ?? "Sin categoría";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(b);
+    return acc;
+  }, {});
+
+  const categoryOrder = Object.keys(ownByCategory).sort((a, b) =>
+    a === "Sin categoría" ? 1 : b === "Sin categoría" ? -1 : a.localeCompare(b)
+  );
 
   return (
     <div className="p-8 space-y-8">
@@ -44,27 +56,33 @@ export default async function BanksPage() {
         </Link>
       </div>
 
-      {ownBanks.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-wider">
-            Mis bancos
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {ownBanks.map((bank) => (
-              <BankCard
-                key={bank.id}
-                id={bank.id}
-                name={bank.name}
-                description={bank.description}
-                questionCount={bank._count.bankQuestions}
-                isSystem={false}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {ownBanks.length === 0 && (
+      {/* Mis bancos agrupados por categoría */}
+      {ownBanks.length > 0 ? (
+        <div className="space-y-6">
+          {categoryOrder.map((cat) => (
+            <section key={cat} className="space-y-3">
+              <h2 className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-2">
+                {cat}
+                <span className="text-xs font-normal normal-case text-[#4B5563]">
+                  ({ownByCategory[cat].length} banco{ownByCategory[cat].length > 1 ? "s" : ""})
+                </span>
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {ownByCategory[cat].map((bank) => (
+                  <BankCard
+                    key={bank.id}
+                    id={bank.id}
+                    name={bank.name}
+                    description={bank.description}
+                    questionCount={bank._count.bankQuestions}
+                    isSystem={false}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : (
         <div className="rounded-xl border border-dashed border-[#2D2A3E] p-10 text-center">
           <p className="text-[#9CA3AF]">
             Todavía no tienes bancos propios.{" "}

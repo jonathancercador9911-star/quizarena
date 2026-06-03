@@ -29,6 +29,7 @@ model QuestionBank {
   id            String         @id @default(cuid())
   name          String
   description   String?
+  category      String?
   isSystem      Boolean        @default(false)
   moderatorId   String?
   createdAt     DateTime       @default(now())
