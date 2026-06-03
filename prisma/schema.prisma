@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Moderator {
+  id            String         @id @default(cuid())
+  authId        String         @unique
+  email         String         @unique
+  name          String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  gameSessions  GameSession[]
+  questionBanks QuestionBank[]
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  icon      String?
+  isSystem  Boolean    @default(true)
+  questions Question[]
+}
+
+model QuestionBank {
+  id            String         @id @default(cuid())
+  name          String
+  description   String?
+  isSystem      Boolean        @default(false)
+  moderatorId   String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  bankQuestions BankQuestion[]
+  gameSessions  GameSession[]
+  moderator     Moderator?     @relation(fields: [moderatorId], references: [id])
+}
+
+model Question {
+  id            String         @id @default(cuid())
+  text          String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption String
+  difficulty    String         @default("medium")
+  categoryId    String?
+  aiGenerated   Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  bankQuestions BankQuestion[]
+  gameRounds    GameRound[]
+  category      Category?      @relation(fields: [categoryId], references: [id])
+}
+
+model BankQuestion {
+  id             String       @id @default(cuid())
+  questionBankId String
+  questionId     String
+  order          Int
+  questionBank   QuestionBank @relation(fields: [questionBankId], references: [id], onDelete: Cascade)
+  question       Question     @relation(fields: [questionId], references: [id])
+
+  @@unique([questionBankId, questionId])
+}
+
+model GameSession {
+  id              String       @id @default(cuid())
+  roomCode        String       @unique
+  moderatorId     String
+  questionBankId  String
+  mode            String       @default("individual")
+  status          String       @default("lobby")
+  currentRound    Int          @default(0)
+  totalRounds     Int
+  timePerQuestion Int          @default(20)
+  createdAt       DateTime     @default(now())
+  finishedAt      DateTime?
+  players         GamePlayer[]
+  rounds          GameRound[]
+  moderator       Moderator    @relation(fields: [moderatorId], references: [id])
+  questionBank    QuestionBank @relation(fields: [questionBankId], references: [id])
+  teams           Team[]
+}
+
+model Team {
+  id            String       @id @default(cuid())
+  gameSessionId String
+  name          String
+  color         String
+  players       GamePlayer[]
+  gameSession   GameSession  @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+}
+
+model GamePlayer {
+  id            String         @id @default(cuid())
+  gameSessionId String
+  nickname      String
+  teamId        String?
+  totalScore    Int            @default(0)
+  isConnected   Boolean        @default(true)
+  joinedAt      DateTime       @default(now())
+  gameSession   GameSession    @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  team          Team?          @relation(fields: [teamId], references: [id])
+  answers       PlayerAnswer[]
+}
+
+model GameRound {
+  id            String         @id @default(cuid())
+  gameSessionId String
+  questionId    String
+  roundNumber   Int
+  startedAt     DateTime?
+  finishedAt    DateTime?
+  gameSession   GameSession    @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  question      Question       @relation(fields: [questionId], references: [id])
+  answers       PlayerAnswer[]
+
+  @@unique([gameSessionId, roundNumber])
+}
+
+model PlayerAnswer {
+  id             String     @id @default(cuid())
+  gameRoundId    String
+  gamePlayerId   String
+  selectedOption String?
+  isCorrect      Boolean?
+  score          Int        @default(0)
+  answeredAt     DateTime?
+  responseMs     Int?
+  gamePlayer     GamePlayer @relation(fields: [gamePlayerId], references: [id], onDelete: Cascade)
+  gameRound      GameRound  @relation(fields: [gameRoundId], references: [id], onDelete: Cascade)
+
+  @@unique([gameRoundId, gamePlayerId])
+}

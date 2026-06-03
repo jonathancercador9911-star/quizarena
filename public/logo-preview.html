@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QuizArena Logo Preview</title>
+  <style>
+    body {
+      background: #13111A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      gap: 40px;
+    }
+    .preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .label {
+      color: #9CA3AF;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .bg-dark {
+      background: #13111A;
+      padding: 24px 40px;
+      border-radius: 12px;
+      border: 1px solid #2D2A3E;
+    }
+    .bg-surface {
+      background: #1E1B2E;
+      padding: 24px 40px;
+      border-radius: 12px;
+      border: 1px solid #2D2A3E;
+    }
+    .bg-white {
+      background: white;
+      padding: 24px 40px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-box">
+    <span class="label">Fondo oscuro (landing / dashboard)</span>
+    <div class="bg-dark">
+      <img src="/logo.svg" width="286" height="72" alt="QuizArena Logo">
+    </div>
+  </div>
+
+  <div class="preview-box">
+    <span class="label">Fondo surface (sidebar)</span>
+    <div class="bg-surface">
+      <img src="/logo.svg" width="286" height="72" alt="QuizArena Logo">
+    </div>
+  </div>
+
+  <div class="preview-box">
+    <span class="label">Versión pequeña (navbar compacto)</span>
+    <div class="bg-dark">
+      <img src="/logo.svg" width="180" height="45" alt="QuizArena Logo">
+    </div>
+  </div>
+
+  <div class="preview-box">
+    <span class="label">Sobre fondo blanco</span>
+    <div class="bg-white">
+      <img src="/logo.svg" width="286" height="72" alt="QuizArena Logo">
+    </div>
+  </div>
+
+</body>
+</html>
