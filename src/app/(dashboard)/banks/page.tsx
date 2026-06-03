@@ -33,7 +33,7 @@ export default async function BanksPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#F8FAFC]">Bancos de preguntas</h1>
           <p className="text-[#9CA3AF] mt-1">
-            Administrá tus bancos o usá los del sistema.
+            Administra tus bancos o usa los del sistema.
           </p>
         </div>
         <Link href="/banks/new">
@@ -67,11 +67,11 @@ export default async function BanksPage() {
       {ownBanks.length === 0 && (
         <div className="rounded-xl border border-dashed border-[#2D2A3E] p-10 text-center">
           <p className="text-[#9CA3AF]">
-            Todavía no tenés bancos propios.{" "}
+            Todavía no tienes bancos propios.{" "}
             <Link href="/banks/new" className="text-[#7C3AED] hover:underline">
-              Creá uno
+              Crea uno
             </Link>{" "}
-            o generá preguntas con IA.
+            o genera preguntas con IA.
           </p>
         </div>
       )}

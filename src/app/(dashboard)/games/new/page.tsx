@@ -22,7 +22,7 @@ export default async function NewGamePage() {
   return (
     <div className="p-8 max-w-2xl">
       <h1 className="text-2xl font-bold text-[#F8FAFC] mb-2">Nueva partida</h1>
-      <p className="text-[#9CA3AF] mb-8">Configurá la sesión de juego paso a paso.</p>
+      <p className="text-[#9CA3AF] mb-8">Configura la sesión de juego paso a paso.</p>
       <CreateGameWizard banks={banks.map((b) => ({ id: b.id, name: b.name, questionCount: b._count.bankQuestions }))} />
     </div>
   );

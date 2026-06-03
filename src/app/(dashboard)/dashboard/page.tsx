@@ -48,7 +48,7 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold text-[#F8FAFC]">
             Hola, {moderator.name ?? user.email?.split("@")[0]} 👋
           </h1>
-          <p className="text-[#9CA3AF] mt-1">Acá está el resumen de tu actividad.</p>
+          <p className="text-[#9CA3AF] mt-1">Aquí está el resumen de tu actividad.</p>
         </div>
         <Link href="/games/new">
           <Button className="bg-[#7C3AED] hover:bg-[#5B21B6] text-white">
@@ -94,9 +94,9 @@ export default async function DashboardPage() {
           <div className="rounded-xl border border-dashed border-[#2D2A3E] p-10 text-center">
             <Trophy className="h-8 w-8 text-[#2D2A3E] mx-auto mb-3" />
             <p className="text-[#9CA3AF] text-sm">
-              Todavía no jugaste ninguna partida.{" "}
+              Todavía no has jugado ninguna partida.{" "}
               <Link href="/games/new" className="text-[#7C3AED] hover:underline">
-                Creá una
+                Crea una
               </Link>
               .
             </p>

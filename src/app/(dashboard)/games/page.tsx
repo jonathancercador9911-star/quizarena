@@ -54,9 +54,9 @@ export default async function GamesPage() {
         <div className="rounded-xl border border-dashed border-[#2D2A3E] p-16 text-center">
           <Trophy className="h-10 w-10 text-[#2D2A3E] mx-auto mb-4" />
           <p className="text-[#9CA3AF] text-sm">
-            Todavía no jugaste ninguna partida.{" "}
+            Todavía no has jugado ninguna partida.{" "}
             <Link href="/games/new" className="text-[#7C3AED] hover:underline">
-              Creá una ahora
+              Crea una ahora
             </Link>
             .
           </p>

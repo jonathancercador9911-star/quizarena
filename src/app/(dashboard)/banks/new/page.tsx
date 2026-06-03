@@ -80,7 +80,7 @@ export default function NewBankPage() {
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describí el contenido de este banco..."
+                placeholder="Describe el contenido de este banco..."
                 rows={3}
                 disabled={loading}
                 className="bg-[#13111A] border-[#2D2A3E] text-[#F8FAFC] placeholder:text-[#9CA3AF] resize-none"

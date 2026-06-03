@@ -107,7 +107,7 @@ export default async function BankDetailPage({
           <p className="text-[#9CA3AF]">
             {bank.isSystem
               ? "Este banco del sistema no tiene preguntas."
-              : "Este banco está vacío. Agregá preguntas manualmente o generá con IA."}
+              : "Este banco está vacío. Agrega preguntas manualmente o genera con IA."}
           </p>
         </div>
       ) : (

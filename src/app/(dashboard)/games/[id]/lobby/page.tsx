@@ -32,7 +32,7 @@ export default async function ModeratorLobbyPage({
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[#F8FAFC]">Sala de espera</h1>
         <p className="text-[#9CA3AF] mt-1">
-          Esperá que se unan los jugadores y luego iniciá la partida.
+          Espera que se unan los jugadores y luego inicia la partida.
         </p>
       </div>
 

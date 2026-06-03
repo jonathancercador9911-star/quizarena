@@ -65,7 +65,7 @@ function LoginForm({
           Iniciar sesión
         </CardTitle>
         <CardDescription className="text-[#9CA3AF]">
-          Accedé a tu panel de moderador
+          Accede a tu panel de moderador
         </CardDescription>
       </CardHeader>
 
@@ -119,7 +119,7 @@ function LoginForm({
             {loading ? "Ingresando..." : "Ingresar"}
           </Button>
           <p className="text-sm text-[#9CA3AF] text-center">
-            ¿No tenés cuenta?{" "}
+            ¿No tienes cuenta?{" "}
             <Link
               href="/register"
               className="text-[#7C3AED] hover:underline font-medium"

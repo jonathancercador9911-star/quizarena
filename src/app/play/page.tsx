@@ -87,7 +87,7 @@ export default function JoinPage() {
           <h1 className="font-heading text-3xl font-extrabold text-[#F8FAFC]">
             QuizArena
           </h1>
-          <p className="text-[#9CA3AF] mt-2">Ingresá el código de sala para unirte</p>
+          <p className="text-[#9CA3AF] mt-2">Ingresa el código de sala para unirte</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

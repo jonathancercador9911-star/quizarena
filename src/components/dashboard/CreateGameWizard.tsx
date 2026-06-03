@@ -57,7 +57,7 @@ export function CreateGameWizard({ banks }: Props) {
   }
 
   function next() {
-    if (step === 0 && !bankId) { setError("Seleccioná un banco"); return; }
+    if (step === 0 && !bankId) { setError("Selecciona un banco"); return; }
     if (step === 1 && mode === "teams" && step + 1 === 2) { setError(null); setStep(step + 1); return; }
     setError(null);
     const actualSteps = mode === "individual" ? ["banco", "modo", "tiempo"] : ["banco", "modo", "equipos", "tiempo"];
@@ -112,7 +112,7 @@ export function CreateGameWizard({ banks }: Props) {
         {/* Step 0: Bank */}
         {step === 0 && (
           <div className="space-y-3">
-            <p className="text-sm text-[#9CA3AF] mb-4">Seleccioná el banco de preguntas para esta partida.</p>
+            <p className="text-sm text-[#9CA3AF] mb-4">Selecciona el banco de preguntas para esta partida.</p>
             {banks.length === 0 && <p className="text-[#9CA3AF] text-sm">No hay bancos disponibles.</p>}
             {banks.map((b) => (
               <button key={b.id} onClick={() => { setBankId(b.id); setError(null); }}
@@ -148,7 +148,7 @@ export function CreateGameWizard({ banks }: Props) {
         {/* Step 2 (teams mode): Teams */}
         {step === 2 && mode === "teams" && (
           <div className="space-y-3">
-            <p className="text-sm text-[#9CA3AF] mb-4">Configurá los equipos (mín. 2, máx. 8).</p>
+            <p className="text-sm text-[#9CA3AF] mb-4">Configura los equipos (mín. 2, máx. 8).</p>
             {teams.map((team, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="flex gap-1.5 shrink-0">

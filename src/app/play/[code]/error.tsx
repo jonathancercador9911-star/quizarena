@@ -22,7 +22,7 @@ export default function PlayError({
         Se perdió la conexión
       </h2>
       <p className="text-[#9CA3AF] text-sm mb-6 max-w-xs">
-        Hubo un problema con la conexión en tiempo real. Intentá reconectarte.
+        Hubo un problema con la conexión en tiempo real. Intenta reconectarte.
       </p>
       <div className="flex gap-3">
         <Button

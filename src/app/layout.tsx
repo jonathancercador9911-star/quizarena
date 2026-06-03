@@ -16,7 +16,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "QuizArena — Trivia multijugador en tiempo real",
   description:
-    "Creá partidas de trivia con IA, invitá a tus amigos y jugá en tiempo real desde el celular.",
+    "Crea partidas de trivia, invita a tus panas y compite en tiempo real desde el celular.",
 };
 
 export default function RootLayout({

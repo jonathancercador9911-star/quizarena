@@ -98,7 +98,7 @@ export function QuestionEditor({ bankId, isSystem }: QuestionEditorProps) {
                 <Textarea
                   value={form.text}
                   onChange={(e) => setForm({ ...form, text: e.target.value })}
-                  placeholder="Escribí la pregunta aquí..."
+                  placeholder="Escribe la pregunta aquí..."
                   required
                   rows={3}
                   className="bg-[#13111A] border-[#2D2A3E] text-[#F8FAFC] placeholder:text-[#9CA3AF] resize-none"

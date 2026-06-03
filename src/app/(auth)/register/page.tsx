@@ -58,7 +58,7 @@ export default function RegisterPage() {
             ¡Cuenta creada!
           </CardTitle>
           <CardDescription className="text-[#9CA3AF]">
-            Revisá tu email para confirmar tu cuenta. Una vez confirmada, podés
+            Revisa tu email para confirmar tu cuenta. Una vez confirmada, puedes
             iniciar sesión.
           </CardDescription>
         </CardHeader>
@@ -81,7 +81,7 @@ export default function RegisterPage() {
           Crear cuenta
         </CardTitle>
         <CardDescription className="text-[#9CA3AF]">
-          Registrate como moderador para crear partidas
+          Regístrate como moderador para crear partidas
         </CardDescription>
       </CardHeader>
 
@@ -152,12 +152,12 @@ export default function RegisterPage() {
             {loading ? "Creando cuenta..." : "Crear cuenta"}
           </Button>
           <p className="text-sm text-[#9CA3AF] text-center">
-            ¿Ya tenés cuenta?{" "}
+            ¿Ya tienes cuenta?{" "}
             <Link
               href="/login"
               className="text-[#7C3AED] hover:underline font-medium"
             >
-              Iniciá sesión
+              Inicia sesión
             </Link>
           </p>
         </CardFooter>
