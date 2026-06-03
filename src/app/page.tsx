@@ -6,42 +6,42 @@ import { Button } from "@/components/ui/button";
 const STEPS = [
   {
     number: "01",
-    title: "Creá tu banco",
+    title: "Crea tu banco",
     description:
-      "Armá preguntas con IA en segundos o agregá las tuyas. Organizalas por categoría y dificultad.",
+      "Agrega tus preguntas o usa las del banco general. Organízalas por categoría y dificultad.",
   },
   {
     number: "02",
-    title: "Compartí el código",
+    title: "Comparte el código",
     description:
       "Los jugadores entran desde su celular con un código de 6 letras. Sin descarga ni registro.",
   },
   {
     number: "03",
-    title: "¡A competir!",
+    title: "¡Que empiece la batalla!",
     description:
-      "Respondé en tiempo real, acumulá puntos por velocidad y mirá el podio al final.",
+      "Responde en tiempo real, acumula puntos por velocidad y mira el podio al final.",
   },
 ];
 
 const FEATURES = [
   {
     icon: Brain,
-    title: "Preguntas con IA",
+    title: "Banco de preguntas",
     description:
-      "Claude Haiku genera un banco completo sobre cualquier tema en segundos. Solo revisás y guardás.",
+      "Crea tu propio banco con preguntas de cualquier tema. Organízalas por categoría y nivel de dificultad.",
   },
   {
     icon: Users,
     title: "Modo equipos",
     description:
-      "Los jugadores compiten en equipos. El sistema los distribuye automáticamente al iniciar.",
+      "Los jugadores compiten en equipos. El sistema los distribuye automáticamente al iniciar la partida.",
   },
   {
     icon: Smartphone,
     title: "Sin registro para jugadores",
     description:
-      "Solo el moderador necesita cuenta. Los jugadores entran con un código desde cualquier celular.",
+      "Solo el moderador necesita cuenta. Tus panas entran directo con el código desde cualquier celular.",
   },
   {
     icon: Zap,
@@ -60,7 +60,7 @@ export default function HomePage() {
       <section className="flex-1 flex flex-col items-center justify-center py-24 px-6 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/30 px-4 py-1.5 text-sm text-[#7C3AED] font-medium mb-8">
           <Zap className="h-3.5 w-3.5" />
-          Trivia multijugador en tiempo real
+          La trivia más bacán del Ecuador
         </div>
 
         <h1 className="font-heading text-5xl sm:text-6xl font-extrabold text-[#F8FAFC] max-w-2xl leading-tight">
@@ -70,8 +70,8 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-6 text-xl text-[#9CA3AF] max-w-lg leading-relaxed">
-          Creá partidas de trivia con IA, invitá a tus amigos y competí en
-          tiempo real desde el celular. Sin complicaciones.
+          Crea tu partida, comparte el código con tus panas y compite en
+          tiempo real desde el celular. Sin registros, sin complicaciones.
         </p>
 
         <div className="mt-10 flex gap-4 flex-wrap justify-center">
@@ -80,7 +80,7 @@ export default function HomePage() {
               size="lg"
               className="bg-[#7C3AED] hover:bg-[#5B21B6] text-white h-12 px-8 text-base font-semibold"
             >
-              Crear una partida
+              ¡Crear partida!
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </Link>
@@ -111,7 +111,7 @@ export default function HomePage() {
             Cómo funciona
           </h2>
           <p className="text-[#9CA3AF] text-center mb-12">
-            De cero a partida en menos de 10 minutos.
+            De cero a partida en menos de 10 minutos. De una.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -136,10 +136,10 @@ export default function HomePage() {
       <section className="py-20 px-6 border-t border-[#2D2A3E]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-heading text-3xl font-bold text-[#F8FAFC] text-center mb-4">
-            Todo lo que necesitás
+            Todo lo que necesitas
           </h2>
           <p className="text-[#9CA3AF] text-center mb-12">
-            Diseñado para reuniones, clases y eventos corporativos.
+            Perfecto para reuniones con amigos, clases y eventos de empresa.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -164,10 +164,10 @@ export default function HomePage() {
       {/* CTA bottom */}
       <section className="py-20 px-6 border-t border-[#2D2A3E] text-center">
         <h2 className="font-heading text-3xl font-bold text-[#F8FAFC] mb-4">
-          ¿Listo para jugar?
+          ¿Listo para la batalla?
         </h2>
         <p className="text-[#9CA3AF] mb-8">
-          Creá tu primera partida gratis. Sin tarjeta de crédito.
+          Crea tu primera partida gratis. Sin tarjeta de crédito, sin rollos.
         </p>
         <Link href="/register">
           <Button className="bg-[#7C3AED] hover:bg-[#5B21B6] text-white h-12 px-10 text-base font-semibold">
