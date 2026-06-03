@@ -32,6 +32,7 @@ export function CreateGameWizard({ banks }: Props) {
   const [mode, setMode] = useState<"individual" | "teams">("individual");
   const [teams, setTeams] = useState<Team[]>(DEFAULT_TEAMS);
   const [time, setTime] = useState<10 | 20 | 30>(20);
+  const [questionCount, setQuestionCount] = useState<number>(0); // 0 = todas
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,7 +85,7 @@ export function CreateGameWizard({ banks }: Props) {
     const res = await fetch("/api/game-sessions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionBankIds: bankIds, mode, teams: mode === "teams" ? teams : undefined, timePerQuestion: time }),
+      body: JSON.stringify({ questionBankIds: bankIds, mode, teams: mode === "teams" ? teams : undefined, timePerQuestion: time, questionCount }),
     });
 
     const json = (await res.json()) as { data: { id: string } | null; error: string | null };
@@ -203,20 +204,51 @@ export function CreateGameWizard({ banks }: Props) {
           </div>
         )}
 
-        {/* Last step: Time */}
+        {/* Last step: Time + Question Count */}
         {isLastStep && (
-          <div className="space-y-4">
-            <p className="text-sm text-[#9CA3AF] mb-4">¿Cuánto tiempo tendrán los jugadores para responder?</p>
-            <div className="grid grid-cols-3 gap-4">
-              {([10, 20, 30] as const).map((t) => (
-                <button key={t} onClick={() => setTime(t)}
-                  className={cn("rounded-xl border-2 p-6 text-center transition-colors",
-                    time === t ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50"
-                  )}>
-                  <p className="text-3xl font-bold font-heading text-[#F8FAFC]">{t}s</p>
-                  <p className="text-xs text-[#9CA3AF] mt-1">{t === 10 ? "Rápido" : t === 20 ? "Normal" : "Relajado"}</p>
-                </button>
-              ))}
+          <div className="space-y-6">
+            {/* Número de preguntas */}
+            <div>
+              <p className="text-sm text-[#9CA3AF] mb-3">
+                ¿Cuántas preguntas quieres jugar?
+                <span className="ml-2 text-[#7C3AED] font-medium">
+                  ({totalQuestions} disponibles)
+                </span>
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                {[5, 10, 15, 20, 30, 0].map((n) => {
+                  const label = n === 0 ? "Todas" : `${n}`;
+                  const sublabel = n === 0 ? `${totalQuestions} preguntas` : n > totalQuestions ? "No hay suficientes" : `${n} preguntas`;
+                  const disabled = n !== 0 && n > totalQuestions;
+                  return (
+                    <button key={n} onClick={() => !disabled && setQuestionCount(n)}
+                      disabled={disabled}
+                      className={cn("rounded-xl border-2 p-3 text-center transition-colors",
+                        disabled ? "border-[#2D2A3E] opacity-30 cursor-not-allowed" :
+                        questionCount === n ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50"
+                      )}>
+                      <p className="text-2xl font-bold font-heading text-[#F8FAFC]">{label}</p>
+                      <p className="text-xs text-[#9CA3AF] mt-0.5">{sublabel}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Tiempo por pregunta */}
+            <div>
+              <p className="text-sm text-[#9CA3AF] mb-3">¿Cuánto tiempo para responder cada una?</p>
+              <div className="grid grid-cols-3 gap-3">
+                {([10, 20, 30] as const).map((t) => (
+                  <button key={t} onClick={() => setTime(t)}
+                    className={cn("rounded-xl border-2 p-4 text-center transition-colors",
+                      time === t ? "border-[#7C3AED] bg-[#7C3AED]/10" : "border-[#2D2A3E] hover:border-[#7C3AED]/50"
+                    )}>
+                    <p className="text-2xl font-bold font-heading text-[#F8FAFC]">{t}s</p>
+                    <p className="text-xs text-[#9CA3AF] mt-1">{t === 10 ? "Rápido" : t === 20 ? "Normal" : "Relajado"}</p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}

@@ -5,12 +5,21 @@ import { generateRoomCode } from "@/lib/game/room-code";
 const VALID_MODES = ["individual", "teams"] as const;
 const VALID_TIMES = [10, 20, 30] as const;
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export async function POST(request: Request) {
   const moderator = await getModerator();
   if (!moderator) return apiResponse(null, "No autorizado", 401);
 
   const body = (await request.json()) as Record<string, unknown>;
-  const { questionBankIds, mode, teams, timePerQuestion } = body;
+  const { questionBankIds, mode, teams, timePerQuestion, questionCount } = body;
 
   // Acepta array o string único (retrocompatibilidad)
   const bankIdsRaw = Array.isArray(questionBankIds)
@@ -56,27 +65,39 @@ export async function POST(request: Request) {
     }
   }
 
-  const totalRounds = combinedQuestions.length;
-  if (totalRounds === 0) {
+  if (combinedQuestions.length === 0) {
     return apiResponse(null, "Los bancos seleccionados no tienen preguntas", 400);
   }
 
+  // Aplicar límite de preguntas con selección aleatoria
+  const requestedCount = typeof questionCount === "number" && questionCount > 0
+    ? questionCount
+    : combinedQuestions.length;
+
+  const finalQuestions = combinedQuestions.length <= requestedCount
+    ? combinedQuestions
+    : shuffleArray(combinedQuestions).slice(0, requestedCount);
+
+  const totalRounds = finalQuestions.length;
+
   // Si hay más de un banco, crear banco combinado temporal para la sesión
   let sessionBankId: string;
-  if (banks.length === 1) {
+  const needsMergedBank = banks.length > 1 || finalQuestions.length < combinedQuestions.length;
+
+  if (!needsMergedBank) {
     sessionBankId = banks[0].id;
   } else {
     const bankNames = banks.map((b) => b.name).join(" + ");
     const mergedBank = await prisma.questionBank.create({
       data: {
-        name: `[Combinado] ${bankNames}`.slice(0, 100),
-        description: `Banco combinado para partida`,
+        name: `[Partida] ${bankNames}`.slice(0, 100),
+        description: `Selección de ${totalRounds} preguntas para partida`,
         isSystem: false,
         moderatorId: moderator.id,
         bankQuestions: {
-          create: combinedQuestions.map((q) => ({
+          create: finalQuestions.map((q, i) => ({
             questionId: q.questionId,
-            order: q.order,
+            order: i,
           })),
         },
       },
