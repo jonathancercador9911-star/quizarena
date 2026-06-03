@@ -55,6 +55,7 @@ export default async function GameControlPage({
           question: { text: currentRound.question.text },
         }}
         totalPlayers={totalPlayers}
+        timerStarted={currentRound.startedAt !== null}
       />
     </div>
   );

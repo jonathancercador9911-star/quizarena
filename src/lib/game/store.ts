@@ -3,6 +3,7 @@ import type { QuestionPayload, LeaderboardEntry, TeamEntry, PlayerTeamMap, GameS
 
 export type GamePhase =
   | "waiting"
+  | "preview"
   | "question"
   | "answered"
   | "leaderboard"
@@ -34,6 +35,7 @@ interface GameStore {
     playerTeams?: PlayerTeamMap,
     myPlayerId?: string
   ) => void;
+  startTimer: (timePerQuestion: number) => void;
   submitAnswer: (answer: string, isCorrect: boolean, score: number) => void;
   timerExpired: () => void;
   showLeaderboard: (entries: LeaderboardEntry[], teamEntries?: TeamEntry[]) => void;
@@ -71,7 +73,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
 
     set({
-      phase: "question",
+      phase: "preview",
       roundId,
       roundNumber,
       totalRounds,
@@ -85,6 +87,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       myTeamColor,
     });
   },
+
+  startTimer: (timePerQuestion) => set({ phase: "question", timePerQuestion }),
 
   submitAnswer: (answer, isCorrect, score) =>
     set({ phase: "answered", myAnswer: answer, isCorrect, roundScore: score }),

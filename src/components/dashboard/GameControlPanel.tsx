@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Square } from "lucide-react";
+import { ChevronRight, Square, Play } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getChannelName, type GameEvent, type LeaderboardEntry, type GameStats } from "@/lib/game/realtime";
 import { Download } from "lucide-react";
@@ -22,6 +22,7 @@ interface Props {
   totalRounds: number;
   initialRound: InitialRound;
   totalPlayers: number;
+  timerStarted: boolean;
 }
 
 export function GameControlPanel({
@@ -30,6 +31,7 @@ export function GameControlPanel({
   totalRounds,
   initialRound,
   totalPlayers,
+  timerStarted,
 }: Props) {
   const router = useRouter();
   const [roundNumber, setRoundNumber] = useState(initialRound.roundNumber);
@@ -39,18 +41,24 @@ export function GameControlPanel({
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [gameStats, setGameStats] = useState<GameStats | null>(null);
   const [advancing, setAdvancing] = useState(false);
+  const [startingTimer, setStartingTimer] = useState(false);
   const [ending, setEnding] = useState(false);
-  const [phase, setPhase] = useState<"active" | "leaderboard" | "finished">("active");
+  const [phase, setPhase] = useState<"preview" | "active" | "leaderboard" | "finished">(
+    timerStarted ? "active" : "preview"
+  );
 
   const handleEvent = useCallback((event: GameEvent) => {
     if (event.type === "answer:count") {
       setAnswered(event.answered);
       setTotal(event.total);
+    } else if (event.type === "timer:start") {
+      setPhase("active");
+      setStartingTimer(false);
     } else if (event.type === "question:show") {
       setRoundNumber(event.roundNumber);
       setQuestionText(event.question.text);
       setAnswered(0);
-      setPhase("active");
+      setPhase("preview");
       setAdvancing(false);
     } else if (event.type === "leaderboard:show") {
       setLeaderboard(event.leaderboard);
@@ -68,12 +76,18 @@ export function GameControlPanel({
     channel = supabase.channel(getChannelName(roomCode));
     channel
       .on<GameEvent>("broadcast", { event: "answer:count" }, ({ payload }) => handleEvent(payload))
+      .on<GameEvent>("broadcast", { event: "timer:start" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "question:show" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "leaderboard:show" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "game:ended" }, ({ payload }) => handleEvent(payload))
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, [roomCode, handleEvent]);
+
+  async function handleStartTimer() {
+    setStartingTimer(true);
+    await fetch(`/api/game-sessions/${sessionId}/timer`, { method: "POST" });
+  }
 
   async function handleNext() {
     setAdvancing(true);
@@ -185,17 +199,28 @@ export function GameControlPanel({
         </div>
 
         <div className="flex gap-3">
-          <Button
-            onClick={handleNext}
-            disabled={advancing || ending}
-            className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white h-12 font-semibold"
-          >
-            <ChevronRight className="h-5 w-5 mr-1" />
-            {advancing ? "Avanzando..." : roundNumber >= totalRounds ? "Ver resultados" : "Siguiente pregunta"}
-          </Button>
+          {phase === "preview" ? (
+            <Button
+              onClick={handleStartTimer}
+              disabled={startingTimer || ending}
+              className="flex-1 bg-[#7C3AED] hover:bg-[#5B21B6] text-white h-12 font-semibold"
+            >
+              <Play className="h-5 w-5 mr-1" />
+              {startingTimer ? "Iniciando..." : "▶ Iniciar tiempo"}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              disabled={advancing || ending || phase !== "leaderboard" && phase !== "active"}
+              className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white h-12 font-semibold"
+            >
+              <ChevronRight className="h-5 w-5 mr-1" />
+              {advancing ? "Avanzando..." : roundNumber >= totalRounds ? "Ver resultados" : "Siguiente pregunta"}
+            </Button>
+          )}
           <Button
             onClick={handleEnd}
-            disabled={advancing || ending}
+            disabled={advancing || ending || startingTimer}
             variant="outline"
             className="border-[#EF4444]/50 text-[#EF4444] hover:bg-[#EF4444]/10"
           >

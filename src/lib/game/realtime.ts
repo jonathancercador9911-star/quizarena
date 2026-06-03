@@ -22,6 +22,8 @@ export type LeaderboardEntry = {
   totalScore: number;
   rank: number;
   scoreDelta?: number;
+  correctCount?: number;
+  totalTimeMs?: number;
 };
 
 export type TeamEntry = {
@@ -49,6 +51,7 @@ export type GameEvent =
       question: QuestionPayload;
       timePerQuestion: number;
     }
+  | { type: "timer:start"; roundId: string; timePerQuestion: number }
   | { type: "answer:count"; answered: number; total: number }
   | {
       type: "leaderboard:show";

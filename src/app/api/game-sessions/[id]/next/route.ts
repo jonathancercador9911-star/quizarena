@@ -69,14 +69,32 @@ export async function POST(
     orderBy: { totalScore: "desc" },
     include: { team: true },
   });
+
+  // Stats acumuladas por jugador (correctas + tiempo total)
+  const allSessionAnswers = await prisma.playerAnswer.findMany({
+    where: { gameRound: { gameSessionId: id } },
+    select: { gamePlayerId: true, isCorrect: true, responseMs: true },
+  });
+  const statsMap = new Map<string, { correctCount: number; totalTimeMs: number }>();
+  for (const ans of allSessionAnswers) {
+    const curr = statsMap.get(ans.gamePlayerId) ?? { correctCount: 0, totalTimeMs: 0 };
+    statsMap.set(ans.gamePlayerId, {
+      correctCount: curr.correctCount + (ans.isCorrect ? 1 : 0),
+      totalTimeMs: curr.totalTimeMs + (ans.responseMs ?? 0),
+    });
+  }
+
   const leaderboard = players.map((p, i) => {
     const roundAnswer = allAnswers.find((a) => a.gamePlayerId === p.id);
+    const stats = statsMap.get(p.id);
     return {
       playerId: p.id,
       nickname: p.nickname,
       totalScore: p.totalScore + (roundAnswer?.score ?? 0),
       rank: i + 1,
       scoreDelta: roundAnswer?.score ?? 0,
+      correctCount: stats?.correctCount ?? 0,
+      totalTimeMs: stats?.totalTimeMs ?? 0,
     };
   });
 
@@ -135,7 +153,7 @@ export async function POST(
       gameSessionId: id,
       questionId: nextQuestion.question.id,
       roundNumber: nextRoundNumber,
-      startedAt: new Date(),
+      startedAt: null,
     },
   });
 

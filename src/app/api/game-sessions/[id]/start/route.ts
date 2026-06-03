@@ -64,7 +64,7 @@ export async function POST(
         gameSessionId: session.id,
         questionId: question.id,
         roundNumber: 1,
-        startedAt: new Date(),
+        startedAt: null,
       },
     }),
     prisma.gameSession.update({

@@ -199,6 +199,28 @@ const DATA: CategorySeed[] = [
       { text: "¿Cuántos metros cuadrados tiene una cancha de fútbol reglamentaria como máximo?", optionA: "10.800 m²", optionB: "7.140 m²", optionC: "8.250 m²", optionD: "9.600 m²", correctOption: "A", difficulty: "hard" },
     ],
   },
+  {
+    name: "Scout",
+    icon: "⚜️",
+    bankDescription: "Preguntas sobre el movimiento scout, técnicas de campismo, nudos y valores.",
+    questions: [
+      { text: "¿Quién fundó el movimiento scout?", optionA: "Robert Baden-Powell", optionB: "Ernest Thompson Seton", optionC: "William Boyce", optionD: "Daniel Beard", correctOption: "A", difficulty: "easy" },
+      { text: "¿En qué año se fundó el movimiento scout?", optionA: "1907", optionB: "1900", optionC: "1912", optionD: "1895", correctOption: "A", difficulty: "medium" },
+      { text: "¿Cuál es la promesa scout en su versión más común en español?", optionA: "Prometo hacer todo lo posible por cumplir mis deberes", optionB: "Prometo ser fuerte y valiente siempre", optionC: "Prometo defender a los débiles", optionD: "Prometo ser leal a mi patria ante todo", correctOption: "A", difficulty: "medium" },
+      { text: "¿Cuál es el lema scout internacional?", optionA: "Be Prepared / Siempre Listo", optionB: "Do Your Best / Haz lo Mejor", optionC: "Help Others / Ayuda Siempre", optionD: "One for All / Todos por Uno", correctOption: "A", difficulty: "easy" },
+      { text: "¿Cuántos puntos tiene la flor de lis del símbolo scout?", optionA: "3", optionB: "5", optionC: "4", optionD: "6", correctOption: "A", difficulty: "easy" },
+      { text: "¿Cómo se llama el nudo que se usa para unir dos cuerdas del mismo grosor?", optionA: "Nudo cuadrado (rizo)", optionB: "As de guía", optionC: "Vuelta de escota", optionD: "Nudo de ballestrinque", correctOption: "A", difficulty: "medium" },
+      { text: "¿Para qué sirve el nudo 'as de guía'?", optionA: "Para hacer un lazo fijo que no se aprieta", optionB: "Para unir dos cuerdas", optionC: "Para amarrar al inicio de una cuerda", optionD: "Para hacer una escalera de cuerda", correctOption: "A", difficulty: "medium" },
+      { text: "¿Cuál es la primera rama del escultismo (la de los más pequeños)?", optionA: "Lobatos / Manada", optionB: "Scouts / Tropa", optionC: "Rovers / Clan", optionD: "Pioneros / Unidad", correctOption: "A", difficulty: "easy" },
+      { text: "¿En qué isla realizó Baden-Powell el primer campamento scout experimental en 1907?", optionA: "Brownsea", optionB: "Wight", optionC: "Skye", optionD: "Arran", correctOption: "A", difficulty: "hard" },
+      { text: "¿Cuántos puntos tiene la Ley Scout según la versión clásica?", optionA: "10", optionB: "7", optionC: "12", optionD: "8", correctOption: "A", difficulty: "medium" },
+      { text: "¿Qué es el 'morse' en el contexto scout?", optionA: "Un sistema de comunicación con puntos y rayas", optionB: "Un tipo de nudo", optionC: "Una técnica de orientación", optionD: "Un juego de campamento", correctOption: "A", difficulty: "easy" },
+      { text: "¿Cómo se orienta una brújula para encontrar el norte?", optionA: "La aguja roja siempre apunta al norte magnético", optionB: "La aguja blanca siempre apunta al norte", optionC: "Se orienta mirando al sol al mediodía", optionD: "La aguja negra apunta al norte", correctOption: "A", difficulty: "easy" },
+      { text: "¿Qué significa 'Jamboree' en el contexto scout?", optionA: "Un gran encuentro internacional de scouts", optionB: "Un tipo de campamento de supervivencia", optionC: "El campamento de fin de año de una tropa", optionD: "Una competencia de habilidades scout", correctOption: "A", difficulty: "medium" },
+      { text: "¿Cuál es el saludo scout oficial?", optionA: "Con tres dedos extendidos de la mano derecha", optionB: "Con dos dedos extendidos de la mano derecha", optionC: "Con la mano abierta sobre el corazón", optionD: "Con el puño cerrado en alto", correctOption: "A", difficulty: "easy" },
+      { text: "¿Qué libro escribió Baden-Powell como manual para los scouts?", optionA: "Escultismo para muchachos", optionB: "El arte de la supervivencia", optionC: "Guía del explorador", optionD: "Manual del buen ciudadano", correctOption: "A", difficulty: "medium" },
+    ],
+  },
 ];
 
 async function main() {

@@ -38,6 +38,8 @@ export default function PlayerGamePage({
           event.type === "game:started" ? event.playerTeams : undefined,
           myPlayerId
         );
+      } else if (event.type === "timer:start") {
+        store.startTimer(event.timePerQuestion);
       } else if (event.type === "leaderboard:show") {
         store.showLeaderboard(event.leaderboard, event.teamLeaderboard);
       } else if (event.type === "game:ended") {
@@ -59,6 +61,7 @@ export default function PlayerGamePage({
     channel
       .on<GameEvent>("broadcast", { event: "game:started" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "question:show" }, ({ payload }) => handleEvent(payload))
+      .on<GameEvent>("broadcast", { event: "timer:start" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "leaderboard:show" }, ({ payload }) => handleEvent(payload))
       .on<GameEvent>("broadcast", { event: "game:ended" }, ({ payload }) => handleEvent(payload))
       .subscribe();
@@ -185,6 +188,28 @@ export default function PlayerGamePage({
           </>
         )}
         <p className="text-sm text-[#9CA3AF] animate-pulse mt-4">Esperando al resto...</p>
+      </div>
+    );
+  }
+
+  // --- PREVIEW (leyendo pregunta, timer no iniciado) ---
+  if (store.phase === "preview") {
+    return (
+      <div className="flex-1 flex flex-col items-center px-4 py-6 gap-5 max-w-lg mx-auto w-full">
+        <QuestionCard
+          text={store.question?.text ?? ""}
+          roundNumber={store.roundNumber}
+          totalRounds={store.totalRounds}
+        />
+        <div className="flex flex-col items-center gap-2 mt-4">
+          <div className="flex gap-1.5">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-2 w-2 rounded-full bg-[#7C3AED] animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
+          <p className="text-sm text-[#9CA3AF]">Lee la pregunta... el moderador iniciará el tiempo</p>
+        </div>
       </div>
     );
   }

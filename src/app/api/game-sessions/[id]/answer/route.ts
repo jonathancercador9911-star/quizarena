@@ -40,7 +40,8 @@ export async function POST(
     where: { id: body.gameRoundId, gameSessionId: sessionId, finishedAt: null },
     include: { question: true },
   });
-  if (!round || !round.startedAt) return apiResponse(null, "Ronda no activa", 400);
+  if (!round) return apiResponse(null, "Ronda no encontrada", 400);
+  if (!round.startedAt) return apiResponse(null, "El tiempo aún no ha iniciado", 400);
 
   const alreadyAnswered = await prisma.playerAnswer.findUnique({
     where: { gameRoundId_gamePlayerId: { gameRoundId: round.id, gamePlayerId: playerId } },
